@@ -24,6 +24,7 @@ import sys
 import tempfile
 import threading
 import time
+import webbrowser
 
 import tkinter as tk
 from tkinter import scrolledtext
@@ -39,6 +40,7 @@ except Exception:
 APP_TITLE = "电棍桌宠"
 MAGENTA = "#FF00FF"
 MAGENTA_RGB = (255, 0, 255)
+OTTO_HOMEPAGE = "https://space.bilibili.com/628845081?spm_id_from=333.1387.0.0"
 
 # 运行模式：standard（标准版，含 AiChat） / offline（离线版，无 AiChat）
 APP_MODE = os.environ.get("OTTO_PET_MODE", "standard").strip().lower()
@@ -437,6 +439,7 @@ class OttoPetApp:
             self.menu.add_command(label="🤖 AiChat（离线版未提供）", state="disabled")
         else:
             self.menu.add_command(label="🤖 AiChat 对话", command=self.open_chat)
+        self.menu.add_command(label="🌐 访问 Otto 主页", command=self.open_homepage)
         self.menu.add_command(
             label=("▶ 继续走动" if self.paused else "⏸ 暂停走动"),
             command=self.toggle_pause,
@@ -790,6 +793,19 @@ class OttoPetApp:
 
         win.protocol("WM_DELETE_WINDOW", lambda: self.chat_close(win))
         entry.focus_set()
+
+    # ---------------- 主页 ----------------
+    def open_homepage(self):
+        self.last_interact = time.time()
+        try:
+            webbrowser.open(OTTO_HOMEPAGE)
+        except Exception:
+            try:
+                os.startfile(OTTO_HOMEPAGE)
+            except Exception:
+                self.say("浏览器打不开，你自己去B站搜电棍otto吧。", 3000)
+                return
+        self.say("这是我的B站主页，点个关注！", 2600)
 
     def chat_clear(self, history):
         self.chat_history = []

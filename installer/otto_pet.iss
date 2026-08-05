@@ -1,10 +1,10 @@
 ﻿; 电棍桌宠安装脚本（标准版 / 离线版共用）
 ; 用法：
-;   ISCC.exe /DAppVersion=1.1.0 /DVariant=standard otto_pet.iss
-;   ISCC.exe /DAppVersion=1.1.0 /DVariant=offline  otto_pet.iss
+;   ISCC.exe /DAppVersion=1.1.5 /DVariant=standard otto_pet.iss
+;   ISCC.exe /DAppVersion=1.1.5 /DVariant=offline  otto_pet.iss
 
 #ifndef AppVersion
-  #define AppVersion "1.1.0"
+  #define AppVersion "1.1.5"
 #endif
 #ifndef Variant
   #define Variant "standard"
