@@ -1,0 +1,7 @@
+{
+    "//":"⚠️注意，请在使用前将以下内容替换为您自己的信息，否则无法正常使用！",
+    "modelname": "YourModelName",
+    "apikey":"YourAPIKey",
+    "model_base_url (OpenAI)":"YouModelBaseURL",
+    "model_base_url (Anthropic)":"YouModelBaseURL"
+}

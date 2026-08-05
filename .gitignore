@@ -1,0 +1,23 @@
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 打包临时文件
+build/
+dist/
+*.spec
+
+# 本地数据（不上传）
+otto_pet_data.json
+
+# ===== 关键：排除所有可执行文件和安装包 =====
+*.exe
+*.msi
+*.wixpdb
+release/
+
+# 系统/IDE 垃圾
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

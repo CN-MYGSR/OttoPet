@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 电棍桌宠 MSI 安装脚本（标准版 / 离线版共用）
+     用法：
+       candle.exe -dVariant=standard -dVersion=1.0.0 otto_pet_msi.wxs
+       light.exe -o OttoPet-标准版-1.0.0.msi otto_pet_msi.wixobj components_standard.wixobj
+-->
+
+<?ifndef Variant ?>
+  <?define Variant = "standard" ?>
+<?endif ?>
+<?ifndef Version ?>
+  <?define Version = "1.0.0" ?>
+<?endif ?>
+
+<?if $(var.Variant) = "offline" ?>
+  <?define ProductName = "电棍桌宠 离线版" ?>
+  <?define ProductShortName = "OttoPet 离线版" ?>
+  <?define DirName = "离线版" ?>
+  <?define UpgradeCode = "4F3E9B2A-2222-4A7E-9C2D-000000000002" ?>
+  <?define RegKey = "Software\OttoPet\Offline" ?>
+<?else ?>
+  <?define ProductName = "电棍桌宠 标准版" ?>
+  <?define ProductShortName = "OttoPet 标准版" ?>
+  <?define DirName = "标准版" ?>
+  <?define UpgradeCode = "4F3E9B2A-1111-4A7E-9C2D-000000000001" ?>
+  <?define RegKey = "Software\OttoPet\Standard" ?>
+<?endif ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="$(var.ProductName)" Language="2052" Version="$(var.Version)" Manufacturer="OttoPet" UpgradeCode="$(var.UpgradeCode)" Codepage="65001">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perUser" Manufacturer="OttoPet" Description="$(var.ProductName)" Comments="电棍桌宠安装程序" Keywords="OttoPet,桌宠,电棍"/>
+    <MajorUpgrade DowngradeErrorMessage="已安装的版本更新，请先卸载旧版本再安装。"/>
+    <Media Id="1" Cabinet="otto.cab" EmbedCab="yes"/>
+    <Icon Id="appIcon" SourceFile="..\script\otto_icon.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="appIcon"/>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="ProgramsFolder" Name="Programs">
+          <Directory Id="OttoPetRoot" Name="OttoPet">
+            <Directory Id="INSTALLFOLDER" Name="$(var.DirName)">
+              <Component Id="ShortcutComponent" Guid="*">
+                <Shortcut Id="AppStartShortcut" Directory="ProgramMenuFolder" Name="$(var.ProductShortName)" Advertise="no" Target="[#ottoExe]" Icon="appIcon" IconIndex="0" WorkingDirectory="INSTALLFOLDER"/>
+                <Shortcut Id="AppDesktopShortcut" Directory="DesktopFolder" Name="$(var.ProductShortName)" Advertise="no" Target="[#ottoExe]" Icon="appIcon" IconIndex="0" WorkingDirectory="INSTALLFOLDER"/>
+                <RemoveFolder Id="RemoveProgramsFolder" Directory="ProgramsFolder" On="uninstall"/>
+                <RemoveFolder Id="RemoveOttoPetRoot" Directory="OttoPetRoot" On="uninstall"/>
+                <RemoveFolder Id="RemoveINSTALLFOLDER" Directory="INSTALLFOLDER" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="$(var.RegKey)" Name="shortcut" Type="integer" Value="1" KeyPath="yes"/>
+              </Component>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder"/>
+      <Directory Id="DesktopFolder"/>
+    </Directory>
+
+    <Feature Id="MainFeature" Title="OttoPet" Level="1">
+      <ComponentGroupRef Id="AppComponents"/>
+      <ComponentRef Id="ShortcutComponent"/>
+    </Feature>
+  </Product>
+</Wix>
