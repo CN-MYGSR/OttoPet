@@ -4,6 +4,7 @@
 =================
 一只会在桌面任务栏上来回溜达的虚拟桌宠：
   - 空闲时随机播放配音，鼠标左键点击立即播放配音
+  - 左键按住可拖拽，X 坐标跟随鼠标移动，松开后停止
   - 右键菜单：otto币购买食物喂食、直播打工赚币、AiChat 对话、退出等
   - AiChat 回复命中常用语库时，自动播放同名配音
 
@@ -275,6 +276,11 @@ class OttoPetApp:
         self.satiety = 80
         self.working = False
         self.paused = False
+        self.dragging = False
+        self.drag_offset = 0
+        self.press_x = 0
+        self.press_time = 0.0
+        self.drag_moved = False
         self.last_interact = time.time()
         self.last_manual_play = 0.0
         self.last_complain = 0.0
@@ -348,10 +354,10 @@ class OttoPetApp:
             justify="center",
         )
 
-        self.root.bind("<Button-1>", self.on_left_click)
+        self.root.bind("<ButtonPress-1>", self.on_press)
+        self.root.bind("<B1-Motion>", self.on_drag)
+        self.root.bind("<ButtonRelease-1>", self.on_release)
         self.root.bind("<Button-3>", self.on_right_click)
-        self.pet_lbl.bind("<Button-1>", self.on_left_click)
-        self.pet_lbl.bind("<Button-3>", self.on_right_click)
 
         self.bubble_after = None
         self.float_after = None
@@ -450,9 +456,45 @@ class OttoPetApp:
             except Exception:
                 pass
 
-    # ---------------- 点击 / 语音 / 气泡 ----------------
-    def on_left_click(self, event):
+    # ---------------- 拖拽 / 点击 / 语音 / 气泡 ----------------
+    def on_press(self, event):
         self.last_interact = time.time()
+        self.press_x = event.x_root
+        self.press_time = time.time()
+        self.drag_offset = event.x_root - int(self.pos_x)
+        self.drag_moved = False
+        self.dragging = True
+        try:
+            self.root.grab_set()
+        except Exception:
+            pass
+
+    def on_drag(self, event):
+        if not self.dragging:
+            return
+        dx = event.x_root - self.press_x
+        if abs(dx) > 6:
+            self.drag_moved = True
+        new_x = event.x_root - self.drag_offset
+        new_x = max(self.walk_left, min(self.walk_right, int(new_x)))
+        if new_x != int(self.pos_x):
+            self.pos_x = new_x
+            if dx != 0:
+                self.facing = 1 if dx > 0 else -1
+            self.root.geometry(f"+{int(self.pos_x)}+{int(self.pos_y)}")
+
+    def on_release(self, event):
+        is_click = self.dragging and not self.drag_moved and (time.time() - self.press_time) < 0.6
+        self.dragging = False
+        self.last_interact = time.time()
+        try:
+            self.root.grab_release()
+        except Exception:
+            pass
+        if is_click:
+            self.on_left_click()
+
+    def on_left_click(self):
         now = time.time()
         if now - self.last_manual_play >= 0.8:
             self.last_manual_play = now
@@ -565,7 +607,7 @@ class OttoPetApp:
         self.walk_job = self.root.after(40, self._walk_tick)
 
     def _walk_tick(self):
-        if not self.paused:
+        if not self.paused and not self.dragging:
             now = time.time()
             if now < self.paused_until:
                 pass

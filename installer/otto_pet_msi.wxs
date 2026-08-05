@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 电棍桌宠 MSI 安装脚本（标准版 / 离线版共用）
      用法：
-       candle.exe -dVariant=standard -dVersion=1.0.0 otto_pet_msi.wxs
+       candle.exe -dVariant=standard -dVersion=1.1.0 otto_pet_msi.wxs
        light.exe -o OttoPet-标准版-1.0.0.msi otto_pet_msi.wixobj components_standard.wixobj
 -->
 
@@ -9,7 +9,7 @@
   <?define Variant = "standard" ?>
 <?endif ?>
 <?ifndef Version ?>
-  <?define Version = "1.0.0" ?>
+  <?define Version = "1.1.0" ?>
 <?endif ?>
 
 <?if $(var.Variant) = "offline" ?>

@@ -19,7 +19,7 @@ $toolsDir    = Join-Path $env:LOCALAPPDATA "OttoPetBuildTools"
 $wixTools    = Join-Path $toolsDir "wix3\tools"
 $iscc        = Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 6\ISCC.exe"
 
-$version = "1.0.0"
+$version = "1.1.0"
 
 function Remove-Dir([string]$Path) {
     if (Test-Path -LiteralPath $Path) {
