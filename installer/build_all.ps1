@@ -8,9 +8,10 @@ param(
 $ErrorActionPreference = "Stop"
 
 $root        = "D:\OttoPet"
+$version     = "1.2.0"
 $scriptDir   = Join-Path $root "script"
 $installerDir= Join-Path $root "installer"
-$releaseDir  = Join-Path $root "release"
+$releaseDir  = Join-Path (Join-Path $root "release") $version
 $stagingDir  = Join-Path $root "staging"
 $buildDir    = Join-Path $root "build"
 $distDir     = Join-Path $root "dist"
@@ -18,8 +19,6 @@ $wixBuildDir = Join-Path $installerDir "build"
 $toolsDir    = Join-Path $env:LOCALAPPDATA "OttoPetBuildTools"
 $wixTools    = Join-Path $toolsDir "wix3\tools"
 $iscc        = Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 6\ISCC.exe"
-
-$version = "1.1.5"
 
 function Remove-Dir([string]$Path) {
     if (Test-Path -LiteralPath $Path) {
@@ -175,7 +174,7 @@ foreach ($variant in @("standard", "offline")) {
     & (Join-Path $wixTools "candle.exe") -nologo `
         -out (Join-Path $wixBuildDir ($variant + "_components.wixobj")) (Join-Path $wixBuildDir ($variant + "_components.wxs"))
 
-    $msiName = "OttoPet-" + $(if ($variant -eq "offline") { "离线版" } else { "标准版" }) + "-" + $version + ".msi"
+    $msiName = $(if ($variant -eq "offline") { "OttoPet-Offline-" } else { "OttoPet-" }) + $version + ".msi"
     & (Join-Path $wixTools "light.exe") -nologo `
         -out (Join-Path $releaseDir $msiName) `
         (Join-Path $wixBuildDir ($variant + "_main.wixobj")) `

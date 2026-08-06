@@ -1,10 +1,10 @@
 ﻿; 电棍桌宠安装脚本（标准版 / 离线版共用）
 ; 用法：
-;   ISCC.exe /DAppVersion=1.1.5 /DVariant=standard otto_pet.iss
-;   ISCC.exe /DAppVersion=1.1.5 /DVariant=offline  otto_pet.iss
+;   ISCC.exe /DAppVersion=1.2.0 /DVariant=standard otto_pet.iss
+;   ISCC.exe /DAppVersion=1.2.0 /DVariant=offline  otto_pet.iss
 
 #ifndef AppVersion
-  #define AppVersion "1.1.5"
+  #define AppVersion "1.2.0"
 #endif
 #ifndef Variant
   #define Variant "standard"
@@ -15,13 +15,15 @@
   #define AppShortName "OttoPet 离线版"
   #define DirSuffix "离线版"
   #define ExeSource "..\dist\otto_pet_offline.exe"
-  #define OutputBase "OttoPet-离线版-Setup"
+  #define OutputBase "OttoPet-Offline"
+  #define RunValueName "OttoPet Offline"
 #else
   #define AppName "电棍桌宠 标准版"
   #define AppShortName "OttoPet 标准版"
   #define DirSuffix "标准版"
   #define ExeSource "..\dist\otto_pet.exe"
-  #define OutputBase "OttoPet-标准版-Setup"
+  #define OutputBase "OttoPet"
+  #define RunValueName "OttoPet"
 #endif
 
 [Setup]
@@ -38,7 +40,7 @@ DefaultDirName={localappdata}\Programs\OttoPet\{#DirSuffix}
 DefaultGroupName=OttoPet
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
-OutputDir=..\release
+OutputDir=..\release\{#AppVersion}
 OutputBaseFilename={#OutputBase}-{#AppVersion}
 SetupIconFile=..\script\otto_icon.ico
 UninstallDisplayIcon={app}\otto_pet.exe
@@ -57,11 +59,15 @@ Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.i
 
 [Tasks]
 Name: "desktopicon"; Description: "在桌面创建快捷方式"; GroupDescription: "附加任务："; Flags: unchecked
+Name: "autostart"; Description: "开机自动启动电棍桌宠"; GroupDescription: "附加任务："
 
 [Files]
 Source: "{#ExeSource}"; DestDir: "{app}"; DestName: "otto_pet.exe"; Flags: ignoreversion
 Source: "..\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\README.md"; DestDir: "{app}"; DestName: "使用说明.txt"; Flags: ignoreversion isreadme
+
+[Registry]
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#RunValueName}"; ValueData: """{app}\otto_pet.exe"""; Flags: uninsdeletevalue; Tasks: autostart
 
 [Icons]
 Name: "{group}\{#AppShortName}"; Filename: "{app}\otto_pet.exe"; WorkingDir: "{app}"
