@@ -10,7 +10,7 @@
 ## 环境要求：
 Windows7+
 ## 使用方法：
-使用git clone项目或下载发行版后后打开./OttoPet/otto_pet.exe即可，如使用Ai对话功能，请在./AiChat/api.json配置您的模型名、Key、BaseURL
+使用git clone项目或下载发行版后打开./OttoPet/otto_pet.exe即可，如使用Ai对话功能，请在./AiChat/api.json配置您的模型名、Key、BaseURL
 [**配置示例**]
 {
     "//":"⚠️注意，请在使用前将以下内容替换为您自己的信息，否则无法正常使用！",
